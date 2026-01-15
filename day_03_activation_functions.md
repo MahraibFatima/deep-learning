@@ -8,7 +8,12 @@ a neural network without an activation function is just a giant linear regressio
 $$
 \sigma(x) = \frac{1}{1 + e^{-x}}
 $$
+```python
+import numpy as np
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+```
 range is $(0, 1)$. perfect for binary classification.
 
 **flaws:**
@@ -26,6 +31,10 @@ $$
 \tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 $$
 
+```python
+def tanh(x):
+    return (math.exp(x)-math.exp(-x))/(math.exp(x)+math.exp(-x))
+```
 range is $(-1, 1)$.
 
 **betterment:** zero-centered, leading to faster convergence.
@@ -41,7 +50,10 @@ range is $(-1, 1)$.
 $$
 \text{relu}(x) = \max(0, x)
 $$
-
+```python
+def relu(x):
+    return np.maximum(0, x)
+```
 range is $[0, \infty)$.
 
 **betterment:**
@@ -58,7 +70,10 @@ range is $[0, \infty)$.
 $$
 \text{leakyrelu}(x) = \max(\eta x, x)
 $$
-
+```python
+def leaky_relu(x, alpha=0.01):
+    return np.maximum(alpha * x, x)
+```
 **betterment:** provides a small, non-zero step for negative inputs, allowing neurons to recover.
 
 **when to use:** if the "dying relu" problem occurs (check activation stats).
@@ -72,13 +87,19 @@ x & \text{if } x \geq 0 \\
 \eta(e^x - 1) & \text{otherwise}
 \end{cases}
 $$
-
+```python
+def elu(x, alpha=1.0):
+    return np.where(x >= 0, x, alpha * (np.exp(x) - 1))
+```
 ## gaussian error linear unit (gelu)
 
 $$
 \text{gelu}(x) \approx 0.5x\left(1 + \tanh\left[\sqrt{\frac{2}{\pi}}\left(x + 0.044715x^3\right)\right]\right)
 $$
-
+```python
+def gelu(x):
+    return 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * x**3)))
+```
 **betterment:** default SOTA for transformers.
 
 side note: i read my second research paper, but it was the first one i read from a learning perspective, so i'm happy about it. this formula was also copied from a research paper.
@@ -90,5 +111,8 @@ $$
 $$
 
 $\beta$ is often 1.
-
+```python
+def swish(x, beta=1.0):
+    return x * sigmoid(beta * x)
+```
 **when to use:** good alternative for relu, used for cnn tasks.
